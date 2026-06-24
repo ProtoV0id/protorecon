@@ -1,0 +1,11 @@
+[project]
+name = "protorecon"
+version = "0.1.0"
+description = "A passive OSINT CLI framework"
+dependencies = [
+    "typer",
+    "rich"
+]
+
+[project.scripts]
+protorecon = "protorecon.cli:app"
