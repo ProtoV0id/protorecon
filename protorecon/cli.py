@@ -6,18 +6,22 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.table import Table 
 from rich.prompt import Prompt 
-from colorist import Color, Effect
+#from colorist import Color, Effect
 
+#py imports for modules and other files 
+from protorecon.framework.state import SessionState
+from protorecon.framework.ui import show_banner
+from protorecon.framework.commands import get_commands
 
 #Building the actual app. Runs a callback to main instead of an error
 app = typer.Typer(invoke_without_command=True)
 console = Console()
 
-#colors. Created to make colors the same and easy to change
-proto_green = "16c819"
-proto_cyan = "1CDC9A"
-proto_red = "B5382B"
-proto_amb = "FFC107"
+#colors. Created to make colors the same and easy to change WIP.
+#PROTO_GREEN = "16c819"
+#PROTO_CYAN = "1CDC9A"
+#PROTO_RED = "B5382B"
+#PROTO_AMB = "FFC107"
 
 #Creates program state. Stores the information of the session including settings, modules, and the runtime.
 class ProtoState:
@@ -30,84 +34,41 @@ def clear_screen():
     #Clear the terminal before making the Protorecon banner
     os.system("cls" if os.name == "nt" else "clear")
 
-BANNER = r"""
-██████╗ ██████╗  ██████╗ ████████╗ ██████╗ ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
-██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
-██████╔╝██████╔╝██║   ██║   ██║   ██║   ██║██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
-██╔═══╝ ██╔══██╗██║   ██║   ██║   ██║   ██║██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
-██║     ██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
-╚═╝     ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝
-"""
-
-
-def show_banner():
-    clear_screen()
-    console.print(f"[bold green]{BANNER}[/bold green]")
-    console.print("[cyan]Passive OSINT Framework[/cyan]")
-    console.print("[green]Reconnaissance. Intelligence. Control.[/green]\n")
-
-    console.print(
-        Panel.fit(
-            "[green]Author[/green]     : Protovoid\n"
-            "[green]Version[/green]    : 0.1.0\n"
-            "[green]Workspace[/green]  : default\n"
-            "[green]Database[/green]   : not connected\n"
-            "[green]Modules[/green]    : loading soon",
-            title="[bold cyan]ProtoRecon Console[/bold cyan]",
-            border_style="green",
-        )
-    )
-
-    console.print("\nType [green]help[/green] to view available commands.")
     
-#Table to display command lists
-def show_commands():
-    table = Table(
-        title="Available Commands",
-        border_style="green",
-        show_header=True,
-        header_style="bold cyan"
-    )
-
-    table.add_column("Command", style="green")
-    table.add_column("Description", style="white")
-
-    table.add_row("banner", "Display the banner")
-    table.add_row("username <target>", "Run username lookup placeholder")
-    table.add_row("help", "Show available commands")
-    table.add_row("clear", "Clears the screen")
-
-    console.print(table)
 
 #This next section starts the console/shell loop. It will act like msfconsole
 def start_console():
-    state = ProtoState()
+    state = SessionState()
+    commands = get_commands()
+
     clear_screen()
-    show_banner()
+    show_banner(console, state)
+    
 
-    while state.running:
-        command = console.input(f"[bold color(46)]ProtoRecon[/bold color(46)]([cyan]{state.workspace}[/cyan]) > ")
-        
-        if command in ["exit", "quit"]:
-            console.print("[yellow]Exiting ProtoRecon[/yellow]")
-            state.running = False
-        elif command == "help":
-            show_commands()
-        elif command == "clear":
-            clear_screen()
-            show_banner()
-        elif command =="banner":
-            show_banner()
-        elif command.startswith("username "):
-            target=command.replace("username","",1).strip()
-            username(target)
-        elif command=="":
+    while state.running: #Read user input as typed
+        user_input = console.input(f"[bold color(46)]ProtoRecon[/bold color(46)]([cyan]{state.workspace}[/cyan]) > ").strip()
+        #command = console.input(f"[bold color(46)]ProtoRecon[/bold color(46)]([cyan]{state.workspace}[/cyan]) > ").strip().lower()
+        #Skip if empty
+        if not user_input:
             continue
-        else:
-            console.print(f"[red][-][/red] Unknown Command: {command}")
-            console.print("Type [green]help[/green] for available commands.")
+        #split input into separate words
+        parts = user_input.split()
 
+        #first word is command
+        command = parts[0].lower()
 
+        #everything else is the arg
+
+        args = parts[1:]
+        if command in ["exit", "quit"]:
+           state.running = False
+           console.print("[yellow]Exiting ProtoRecon...[/yellow]")
+        elif command in commands:
+            commands[command](console, state, args)
+        else:   
+            console.print(f"[red][!] Unknown command:[/red] [yellow]{command}[/yellow]")
+
+#
 @app.callback()
 def main(ctx: typer.Context):
     """
@@ -120,19 +81,6 @@ def main(ctx: typer.Context):
 @app.command()
 def commands():
     show_commands()
-    
-@app.command()
-def banner():
-    """Display the ProtoRecon banner."""
-    show_banner()
-
-
-@app.command()
-def username(target: str):
-    """Run a basic username lookup placeholder."""
-    console.print(f"[green][+][/green] Running username scan for: [bold]{target}[/bold]")
-    console.print("[yellow][!][/yellow] Username module not built yet.")
-
 
 if __name__ == "__main__":
     app()
