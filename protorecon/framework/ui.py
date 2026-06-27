@@ -50,7 +50,7 @@ def show_banner(console, state):
             "[green]Version[/green]    : 0.1.0\n"
             f"[green]Workspace[/green] : {state.workspace}\n"
             f"[green]Target[/green]    : {state.target or 'None'}\n"
-            f"[green]Module[/green]    : {module_count}",
+            f"[green]Modules[/green]    : {module_count}",
             title="[bold cyan]ProtoRecon Console[/bold cyan]",
             border_style="green",
         )

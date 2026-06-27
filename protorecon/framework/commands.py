@@ -11,6 +11,7 @@ from protorecon.framework.ui import show_banner
 from protorecon.framework.workspaces import workspace_command
 from protorecon.framework.targets import target_command
 from protorecon.modules.web.whois import whois_command
+from protorecon.modules.people.username import sherlock_command
 #main
 
 # def show_help(console, state):
@@ -45,13 +46,13 @@ def banner_command(console, state, args):
     show_banner(console, state)
 
 
-def username_command(console, state, args):
-    if not args:
-        console.print("[red][!][/red] Usage: username <target>")
-        return
-    target = args[0]
-
-    console.print(f"[green][+][/green] Running username scan for: [bold]{target}[/bold]\n[yellow][!] Module under construction...[/yellow]")
+# def username_command(console, state, args):
+    # if not args:
+        # console.print("[red][!][/red] Usage: username <target>")
+        # return
+    # target = args[0]
+# 
+    # console.print(f"[green][+][/green] Running username scan for: [bold]{target}[/bold]\n[yellow][!] Module under construction...[/yellow]")
     
 @app.command()
 def banner():
@@ -109,8 +110,9 @@ def get_commands():
         "clear": clear_command,
         "cls": clear_command,
         "banner": banner_command,
-        "username": username_command,
+        "sherlock": sherlock_command,
         "workspace": workspace_command,
         "target": target_command,
         "whois": whois_command,
+
     }
