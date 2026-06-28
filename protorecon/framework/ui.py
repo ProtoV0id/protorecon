@@ -47,7 +47,7 @@ def show_banner(console, state):
     console.print(
         Panel.fit(
             "[green]Author[/green]     : Protovoid\n"
-            "[green]Version[/green]    : 0.1.0\n"
+            "[green]Version[/green]    : 0.2.0\n"
             f"[green]Workspace[/green] : {state.workspace}\n"
             f"[green]Target[/green]    : {state.target or 'None'}\n"
             f"[green]Modules[/green]    : {module_count}",

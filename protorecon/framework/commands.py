@@ -12,6 +12,7 @@ from protorecon.framework.workspaces import workspace_command
 from protorecon.framework.targets import target_command
 from protorecon.modules.web.whois import whois_command
 from protorecon.modules.people.username import sherlock_command
+from protorecon.framework.modules import show_modules
 #main
 
 # def show_help(console, state):
@@ -77,8 +78,6 @@ def show_commands(console, state, args):
     table.add_row("clear", "Clear the console")
     table.add_row("cls", "Clear the console")
 
-    table.add_row("username <target>", "Run the username lookup module")
-
     table.add_row("workspace", "Show the active workspace")
     table.add_row("workspace list", "List all workspaces")
     table.add_row("workspace create <name>", "Create a new workspace")
@@ -95,7 +94,10 @@ def show_commands(console, state, args):
     table.add_row("target remove <target>", "Remove a target")
     table.add_row("target delete <target>", "Remove a target")
 
+    table.add_row("modules", "Show available modules")
+
     table.add_row("whois", "Run a WHOIS lookup against the active target")
+    table.add_row("sherlock <target>", "Run the sherlock lookup module")
 
     table.add_row("exit", "Exit ProtoRecon")
     table.add_row("quit", "Exit ProtoRecon")
@@ -114,5 +116,6 @@ def get_commands():
         "workspace": workspace_command,
         "target": target_command,
         "whois": whois_command,
+        "modules": show_modules,
 
     }
