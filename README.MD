@@ -73,13 +73,13 @@ Modules automatically use the currently selected target.
 Example:
 
 ```text
-run whois target
+whois target
 ```
 
 or
 
 ```text
-run username 1
+username 1
 ```
 
 ---
@@ -131,7 +131,7 @@ The roadmap is focused on passive reconnaissance.
 Clone the repository
 
 ```bash
-git clone https://github.com/YOURUSERNAME/protorecon.git
+git clone https://github.com/ProtoV0id/protorecon.git
 
 cd protorecon
 ```
@@ -169,9 +169,8 @@ target list
 
 target aim 1
 
-run whois target
+whois target
 
-modules
 ```
 
 ---
@@ -184,7 +183,6 @@ protorecon/
 ├── framework/
 │   ├── cli.py
 │   ├── state.py
-│   ├── registry.py
 │   ├── targets.py
 │   └── ui.py
 │
